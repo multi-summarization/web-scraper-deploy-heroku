@@ -13,6 +13,7 @@ class NewsscraperItem(Item):
     # name = scrapy.Field()
     source = Field()
     headline = Field()
-    tagline = Field()
+    #tagline = Field()
     body = Field()
+    url = Field()
     #genre = Field()
