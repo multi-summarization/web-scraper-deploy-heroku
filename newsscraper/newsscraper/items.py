@@ -8,11 +8,11 @@
 from scrapy.item import Item, Field
 
 
-class NewsscraperItem(Item):
+class Article(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    source = Field()
+    #source = Field()
     headline = Field()
-    tagline = Field()
-    body = Field()
+    link = Field()
+    content = Field()
     #genre = Field()
