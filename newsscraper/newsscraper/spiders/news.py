@@ -3,6 +3,8 @@ import re
 import unidecode
 from newspaper import fulltext
 import requests
+from scrapy.http import Request
+from ..items import Article
 
 # running: scrapy crawl ndtv -o ndtv_articles.json
 
@@ -32,6 +34,7 @@ class ndtvSpider(scrapy.Spider):
             link = article.xpath(".//a/@href").extract_first()
             item['url']= link
 
+<<<<<<< HEAD
             ##### ARTICLE
             item['body'] = fulltext(requests.get(link).text)
 
@@ -40,6 +43,16 @@ class ndtvSpider(scrapy.Spider):
                 'headline' : item['headline'],
                 'link' : item['url'],
                 'article': item['body'],
+=======
+            ##### CONTENT
+            content = fulltext(requests.get(link).text)
+
+
+            yield {
+                'headline' : headline,
+                'link' : link,
+                'content': content,
+>>>>>>> 04a0dbcacf87a9b4377a3dca3702030f06a73b5d
 
             }
             items.append(item)
@@ -50,4 +63,57 @@ class ndtvSpider(scrapy.Spider):
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
 
+<<<<<<< HEAD
         return items
+=======
+# running: scrapy crawl hindu -o hindu_articles.json
+
+class hinduSpider(scrapy.Spider):
+    name = 'hindu'	
+    # art = Article()
+    # def start_requests(self):
+        
+    start_urls = [
+        'https://www.hindustantimes.com/latest-news'
+    ]
+
+    def parse_article(self, response):
+        paras=response.xpath("//div[@class='detail']/p").extract()
+        art = response.meta['article_object']
+        art['content'] = "".join(paras)
+        return art
+
+                
+    def parse(self, response):
+        for article in response.xpath("//div[@class='storyShortDetail']/descendant::a[not(parent::div)]"):
+            
+
+            ##### HEADLINE
+            headline=article.xpath("normalize-space(./text())").extract_first()
+
+            ##### LINK
+            link='https://www.hindustantimes.com' + article.xpath("./@href").extract_first()
+
+            ##### CONTENT
+            art = Article()
+
+            req = Request(link, callback=self.parse_article)
+            req.meta['article_object'] = art
+
+            art['headline'] = headline
+            art['link'] = link
+
+            yield req
+
+            # yield {
+            #     # 'headline': headline,
+            #     # 'link': link,
+            #     'content': Request(link, callback=self.parse_article),
+            # }
+    
+        # next_page = response.xpath("//li[@class='next']/a/@href").extract_first()
+        
+        # if next_page is not None:
+        #     next_page_link = response.urljoin(next_page)
+        #     yield scrapy.Request(url=next_page_link, callback=self.parse)
+>>>>>>> 04a0dbcacf87a9b4377a3dca3702030f06a73b5d
