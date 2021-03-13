@@ -19,25 +19,32 @@ class ndtvSpider(scrapy.Spider):
 
                 
     def parse(self, response):
+        items = []
+
         for article in response.xpath("//h2[@class='newsHdng']"):
-            
+
+            item = Article()
+
+            item['source'] = "NDTV"
 
             ##### HEADLINE
-            headline=article.xpath("normalize-space(.//a/text())").extract_first()
+            item['headline']=article.xpath("normalize-space(.//a/text())").extract_first()
 
             ##### LINK
-            link=article.xpath(".//a/@href").extract_first()
+            link = article.xpath(".//a/@href").extract_first()
+            item['url']= link
 
-            ##### CONTENT
-            content = fulltext(requests.get(link).text)
+            ##### ARTICLE
+            item['content'] = fulltext(requests.get(link).text)
 
 
             yield {
-                'headline' : headline,
-                'link' : link,
-                'content': content,
+                'headline' : item['headline'],
+                'link' : item['url'],
+                'content': item['content'],
 
             }
+            items.append(item)
     
         next_page = response.xpath("//a[contains(@class,'next')]/@href").extract_first()
         
@@ -45,6 +52,7 @@ class ndtvSpider(scrapy.Spider):
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
 
+        return items
 # running: scrapy crawl hindu -o hindu_articles.json
 
 class hinduSpider(scrapy.Spider):

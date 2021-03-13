@@ -11,8 +11,11 @@
 
 BOT_NAME = 'newsscraper'
 
+
+ITEM_PIPELINES = {'newsscraper.pipelines.class NewsscraperPipeline:': 1}
 SPIDER_MODULES = ['newsscraper.spiders']
 NEWSPIDER_MODULE = 'newsscraper.spiders'
+DEFAULT_ITEM_CLASS = 'newsscraper.items.Article'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
