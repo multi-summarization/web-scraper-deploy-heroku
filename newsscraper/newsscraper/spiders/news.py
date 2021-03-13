@@ -23,7 +23,7 @@ class ndtvSpider(scrapy.Spider):
 
         for article in response.xpath("//h2[@class='newsHdng']"):
 
-            item = NewsscraperItem()
+            item = Article()
 
             item['source'] = "NDTV"
 
@@ -34,25 +34,14 @@ class ndtvSpider(scrapy.Spider):
             link = article.xpath(".//a/@href").extract_first()
             item['url']= link
 
-<<<<<<< HEAD
             ##### ARTICLE
-            item['body'] = fulltext(requests.get(link).text)
+            item['content'] = fulltext(requests.get(link).text)
 
 
             yield {
                 'headline' : item['headline'],
                 'link' : item['url'],
-                'article': item['body'],
-=======
-            ##### CONTENT
-            content = fulltext(requests.get(link).text)
-
-
-            yield {
-                'headline' : headline,
-                'link' : link,
-                'content': content,
->>>>>>> 04a0dbcacf87a9b4377a3dca3702030f06a73b5d
+                'content': item['content'],
 
             }
             items.append(item)
@@ -63,9 +52,7 @@ class ndtvSpider(scrapy.Spider):
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
 
-<<<<<<< HEAD
         return items
-=======
 # running: scrapy crawl hindu -o hindu_articles.json
 
 class hinduSpider(scrapy.Spider):
@@ -116,4 +103,3 @@ class hinduSpider(scrapy.Spider):
         # if next_page is not None:
         #     next_page_link = response.urljoin(next_page)
         #     yield scrapy.Request(url=next_page_link, callback=self.parse)
->>>>>>> 04a0dbcacf87a9b4377a3dca3702030f06a73b5d
