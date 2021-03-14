@@ -19,7 +19,6 @@ class ndtvSpider(scrapy.Spider):
 
                 
     def parse(self, response):
-        items = []
 
         for article in response.xpath("//h2[@class='newsHdng']"):
 
@@ -32,7 +31,7 @@ class ndtvSpider(scrapy.Spider):
 
             ##### LINK
             link = article.xpath(".//a/@href").extract_first()
-            item['url']= link
+            item['link']= link
 
             ##### CONTENT
             item['content'] = fulltext(requests.get(link).text)
@@ -40,11 +39,10 @@ class ndtvSpider(scrapy.Spider):
 
             yield {
                 'headline' : item['headline'],
-                'link' : item['url'],
+                'link' : item['link'],
                 'content': item['content'],
 
             }
-            items.append(item)
     
         next_page = response.xpath("//a[contains(@class,'next')]/@href").extract_first()
         
@@ -52,7 +50,6 @@ class ndtvSpider(scrapy.Spider):
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
 
-        return items
 # running: scrapy crawl hindu -o hindu_articles.json
 
 class hinduSpider(scrapy.Spider):
@@ -73,7 +70,6 @@ class hinduSpider(scrapy.Spider):
 
                 
     def parse(self, response):
-        items = []
         for article in response.xpath("//div[@class='storyShortDetail']/descendant::a[not(parent::div)]"):
             
 
@@ -87,14 +83,12 @@ class hinduSpider(scrapy.Spider):
 
             req = Request(link, callback=self.parse_article)
             req.meta['article_object'] = item
-
+            item['source'] = "HindustanTimes"
             item['headline'] = headline
             item['link'] = link
             
             #the request is executed on the below line with the item being passed as meta attribute. pasrse_article callback is executed.
             yield req
-
-            items.append(item)
 
             # yield {
             #     # 'headline': headline,
@@ -107,5 +101,3 @@ class hinduSpider(scrapy.Spider):
         # if next_page is not None:
         #     next_page_link = response.urljoin(next_page)
         #     yield scrapy.Request(url=next_page_link, callback=self.parse)
-
-        return items

@@ -10,9 +10,11 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = 'newsscraper'
+LOG_LEVEL = 'INFO'
 
-
-ITEM_PIPELINES = {'newsscraper.pipelines.class NewsscraperPipeline:': 1}
+ITEM_PIPELINES = {#'newsscraper.pipelines.NewsscraperPipeline': 10,
+                'newsscraper.pipelines.JsonWriterPipeline': 2
+                }
 SPIDER_MODULES = ['newsscraper.spiders']
 NEWSPIDER_MODULE = 'newsscraper.spiders'
 DEFAULT_ITEM_CLASS = 'newsscraper.items.Article'
