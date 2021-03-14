@@ -34,7 +34,7 @@ class ndtvSpider(scrapy.Spider):
             link = article.xpath(".//a/@href").extract_first()
             item['url']= link
 
-            ##### ARTICLE
+            ##### CONTENT
             item['content'] = fulltext(requests.get(link).text)
 
 
@@ -65,13 +65,15 @@ class hinduSpider(scrapy.Spider):
     ]
 
     def parse_article(self, response):
+        ##### CONTENT
         paras=response.xpath("//div[@class='detail']/p").extract()
-        art = response.meta['article_object']
-        art['content'] = "".join(paras)
-        return art
+        item = response.meta['article_object']
+        item['content'] = "".join(paras)
+        return item
 
                 
     def parse(self, response):
+        items = []
         for article in response.xpath("//div[@class='storyShortDetail']/descendant::a[not(parent::div)]"):
             
 
@@ -81,16 +83,18 @@ class hinduSpider(scrapy.Spider):
             ##### LINK
             link='https://www.hindustantimes.com' + article.xpath("./@href").extract_first()
 
-            ##### CONTENT
-            art = Article()
+            item = Article()
 
             req = Request(link, callback=self.parse_article)
-            req.meta['article_object'] = art
+            req.meta['article_object'] = item
 
-            art['headline'] = headline
-            art['link'] = link
-
+            item['headline'] = headline
+            item['link'] = link
+            
+            #the request is executed on the below line with the item being passed as meta attribute. pasrse_article callback is executed.
             yield req
+
+            items.append(item)
 
             # yield {
             #     # 'headline': headline,
@@ -103,3 +107,5 @@ class hinduSpider(scrapy.Spider):
         # if next_page is not None:
         #     next_page_link = response.urljoin(next_page)
         #     yield scrapy.Request(url=next_page_link, callback=self.parse)
+
+        return items
