@@ -12,7 +12,7 @@
 BOT_NAME = 'newsscraper'
 LOG_LEVEL = 'INFO'
 
-ITEM_PIPELINES = {#'newsscraper.pipelines.NewsscraperPipeline': 10,
+ITEM_PIPELINES = {'newsscraper.pipelines.NewsscraperPipeline': 10,
                 'newsscraper.pipelines.JsonWriterPipeline': 2
                 }
 SPIDER_MODULES = ['newsscraper.spiders']
@@ -93,3 +93,20 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv, find_dotenv
+dotenv_path = join(dirname(__file__), './../../.env')
+load_dotenv(dotenv_path)
+
+
+
+
+
+#SQL DB SEETINGS
+DB_USER = os.environ.get("DB_USER")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+DB_HOST = os.environ.get("DB_HOST")
+DB_NAME = os.environ.get("DB_NAME")
+DB_PORT = os.environ.get("DB_PORT")
