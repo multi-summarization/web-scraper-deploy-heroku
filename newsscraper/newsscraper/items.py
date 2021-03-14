@@ -11,7 +11,7 @@ from scrapy.item import Item, Field
 class Article(Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    #source = Field()
+    source = Field()
     headline = Field()
     link = Field()
     content = Field()
