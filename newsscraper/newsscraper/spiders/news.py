@@ -37,16 +37,11 @@ class ndtvSpider(scrapy.Spider):
             item['content'] = fulltext(requests.get(link).text)
 
 
-            yield {
-                'headline' : item['headline'],
-                'link' : item['link'],
-                'content': item['content'],
-
-            }
+            yield item
     
         next_page = response.xpath("//a[contains(@class,'next')]/@href").extract_first()
         
-        if next_page is not None:
+        if next_page is not None and next_page[:-1] != '0':
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
 
@@ -90,14 +85,9 @@ class hinduSpider(scrapy.Spider):
             #the request is executed on the below line with the item being passed as meta attribute. pasrse_article callback is executed.
             yield req
 
-            # yield {
-            #     # 'headline': headline,
-            #     # 'link': link,
-            #     'content': Request(link, callback=self.parse_article),
-            # }
-    
-        # next_page = response.xpath("//li[@class='next']/a/@href").extract_first()
+
+        next_page = response.xpath("//li[@class='next']/a/@href").extract_first()
         
-        # if next_page is not None:
-        #     next_page_link = response.urljoin(next_page)
-        #     yield scrapy.Request(url=next_page_link, callback=self.parse)
+        if next_page is not None and next_page[:-1] != '0':
+            next_page_link = response.urljoin(next_page)
+            yield scrapy.Request(url=next_page_link, callback=self.parse)
