@@ -91,3 +91,41 @@ class hinduSpider(scrapy.Spider):
         if next_page is not None and next_page[:-1] != '0':
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
+
+# running: scrapy crawl ie -o ie_articles.json
+
+class ieSpider(scrapy.Spider):
+    name = 'ie'	
+    # art = Article()
+    # def start_requests(self):
+        
+    start_urls = [
+        'https://indianexpress.com/latest-news/'
+    ]
+          
+    def parse(self, response):
+
+        for article in response.xpath("//div[@class='title']/a"):
+
+            item = Article()
+
+            item['source'] = "ie"
+
+            ##### HEADLINE
+            item['headline']=article.xpath("normalize-space(./text())").extract_first()
+
+            ##### LINK
+            link = article.xpath("./@href").extract_first()
+            item['link']= link
+
+            ##### CONTENT
+            item['content'] = fulltext(requests.get(link).text)
+
+
+            yield item
+    
+        next_page = response.xpath("//ul[@class='page-numbers']/li[position()=11]/a/@href").extract_first()
+        
+        if next_page is not None:
+            next_page_link = response.urljoin(next_page)
+            yield scrapy.Request(url=next_page_link, callback=self.parse)
