@@ -45,10 +45,10 @@ class ndtvSpider(scrapy.Spider):
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
 
-# running: scrapy crawl hindu -o hindu_articles.json
+# running: scrapy crawl hindustan -o hindustan_articles.json
 
-class hinduSpider(scrapy.Spider):
-    name = 'hindu'	
+class hindustanSpider(scrapy.Spider):
+    name = 'hindustan'	
     # art = Article()
     # def start_requests(self):
         
