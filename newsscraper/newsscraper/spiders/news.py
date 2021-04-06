@@ -149,21 +149,24 @@ class hinduSpider(scrapy.Spider):
           
     def parse(self, response):
 
-        for article in response.xpath("//ul[@class='latest-news']/li/a"):
+        for article in response.xpath("//ul[@class='latest-news']/li"):
 
             item = Article()
 
             item['source'] = "hindu"
 
             ##### HEADLINE
-            item['headline']=article.xpath("normalize-space(./text())").extract_first()
+            item['headline'] = article.xpath("normalize-space(./a/text())").extract_first()
 
             ##### LINK
-            link = article.xpath("./@href").extract_first()
+            link = article.xpath("./a/@href").extract_first()
             item['link']= link
 
             ##### CONTENT
             item['content'] = fulltext(requests.get(link).text)
+
+            ##### CAT
+            item['cat'] = article.xpath("normalize-space(./span[contains(@class, 'homeSection')]/text())").extract_first()
 
 
             yield item
