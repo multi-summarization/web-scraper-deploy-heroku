@@ -15,4 +15,4 @@ class Article(Item):
     headline = Field()
     link = Field()
     content = Field()
-    #genre = Field()
+    cat = Field()

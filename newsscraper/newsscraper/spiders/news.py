@@ -65,14 +65,18 @@ class hindustanSpider(scrapy.Spider):
 
                 
     def parse(self, response):
-        for article in response.xpath("//div[@class='storyShortDetail']/descendant::a[not(parent::div)]"):
+        for article in response.xpath("//div[@class='storyShortDetail']"):
             
-
+            headline_object = article.xpath("./descendant::a[not(parent::div)]")
             ##### HEADLINE
-            headline=article.xpath("normalize-space(./text())").extract_first()
+            headline = headline_object.xpath("normalize-space(./text())").extract_first()
 
             ##### LINK
-            link='https://www.hindustantimes.com' + article.xpath("./@href").extract_first()
+            link = 'https://www.hindustantimes.com' + headline_object.xpath("./@href").extract_first()
+
+            ##### CAT
+            cat = article.xpath("./div[contains(@class, 'catName')]/a/text()").extract_first()
+
 
             item = Article()
 
@@ -81,8 +85,9 @@ class hindustanSpider(scrapy.Spider):
             item['source'] = "HindustanTimes"
             item['headline'] = headline
             item['link'] = link
+            item['cat'] = cat
             
-            #the request is executed on the below line with the item being passed as meta attribute. pasrse_article callback is executed.
+            #the request is executed on the below line with the item being passed as meta attribute. parse_article callback is executed.
             yield req
 
 
