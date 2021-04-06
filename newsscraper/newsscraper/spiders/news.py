@@ -129,3 +129,37 @@ class ieSpider(scrapy.Spider):
         if next_page is not None:
             next_page_link = response.urljoin(next_page)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
+
+
+# running: scrapy crawl hindu -o hindu_articles.json
+
+class hinduSpider(scrapy.Spider):
+    name = 'hindu'	
+    # art = Article()
+    # def start_requests(self):
+        
+    start_urls = [
+        'https://www.thehindu.com/latest-news/'
+    ]
+          
+    def parse(self, response):
+
+        for article in response.xpath("//ul[@class='latest-news']/li/a"):
+
+            item = Article()
+
+            item['source'] = "hindu"
+
+            ##### HEADLINE
+            item['headline']=article.xpath("normalize-space(./text())").extract_first()
+
+            ##### LINK
+            link = article.xpath("./@href").extract_first()
+            item['link']= link
+
+            ##### CONTENT
+            item['content'] = fulltext(requests.get(link).text)
+
+
+            yield item
+    
