@@ -49,8 +49,6 @@ class ndtvSpider(scrapy.Spider):
 
 class hindustanSpider(scrapy.Spider):
     name = 'hindustan'	
-    # art = Article()
-    # def start_requests(self):
         
     start_urls = [
         'https://www.hindustantimes.com/latest-news'
@@ -75,7 +73,7 @@ class hindustanSpider(scrapy.Spider):
             link = 'https://www.hindustantimes.com' + headline_object.xpath("./@href").extract_first()
 
             ##### CAT
-            cat = article.xpath("./div[contains(@class, 'catName')]/a/text()").extract_first()
+            cat = re.sub(r'(?<!^)news$', ' ', article.xpath("./div[contains(@class, 'catName')]/a/text()").extract_first())
 
 
             item = Article()
@@ -162,11 +160,13 @@ class hinduSpider(scrapy.Spider):
             link = article.xpath("./a/@href").extract_first()
             item['link']= link
 
+            ##### CAT
+            item['cat'] = article.xpath("normalize-space(./span[contains(@class, 'homeSection')]/text())").extract_first()
+
             ##### CONTENT
             item['content'] = fulltext(requests.get(link).text)
 
-            ##### CAT
-            item['cat'] = article.xpath("normalize-space(./span[contains(@class, 'homeSection')]/text())").extract_first()
+            
 
 
             yield item
