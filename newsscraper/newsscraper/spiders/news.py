@@ -73,7 +73,7 @@ class hindustanSpider(scrapy.Spider):
             link = 'https://www.hindustantimes.com' + headline_object.xpath("./@href").extract_first()
 
             ##### CAT
-            cat = re.sub(r'(?<!^)news$', ' ', article.xpath("./div[contains(@class, 'catName')]/a/text()").extract_first())
+            cat = re.sub(r'[ ](?<!^)news$', '', article.xpath("./div[contains(@class, 'catName')]/a/text()").extract_first())
 
 
             item = Article()
