@@ -99,8 +99,7 @@ class hindustanSpider(scrapy.Spider):
 
 class ieSpider(scrapy.Spider):
     name = 'ie'	
-    # art = Article()
-    # def start_requests(self):
+
         
     start_urls = [
         'https://indianexpress.com/latest-news/'
@@ -119,7 +118,15 @@ class ieSpider(scrapy.Spider):
 
             ##### LINK
             link = article.xpath("./@href").extract_first()
-            item['link']= link
+            item['link'] = link 
+            
+            ##### CAT
+            link_items = link.split('/')
+            item['cat'] = link_items[4] 
+            if item['cat']=='cities':
+                item['cat'] = link_items[5]
+            item['cat'] = ' '.join(item['cat'].split('-'))
+                
 
             ##### CONTENT
             item['content'] = fulltext(requests.get(link).text)
