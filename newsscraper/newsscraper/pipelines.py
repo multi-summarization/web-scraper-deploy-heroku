@@ -55,8 +55,8 @@ class NewsscraperPipeline:
         cmd = "INSERT INTO articles (source, headline , link, category, content)  VALUES (%s, %s, %s, %s)"
         val = (item['source'], item['headline'], item['link'], item['cat'],item['content'])
         #uncomment the lines below to send data to database
-        #self.cursor.execute(cmd, val)  
-        #self.connection.commit()
+        self.cursor.execute(cmd, val)  
+        self.connection.commit()
         
         #self.cursor.execute("SELECT * FROM articles")
         #myresult = self.cursor.fetchall()
