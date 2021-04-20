@@ -51,8 +51,7 @@ class NewsscraperPipeline:
 
     def process_item(self, item, spider):
         #self.cursor.execute("CREATE TABLE articles (id INT AUTO_INCREMENT PRIMARY KEY, source VARCHAR(255), headline VARCHAR(255), link VARCHAR(255), content VARCHAR(2000))")
-        
-        cmd = "INSERT INTO articles (source, headline , link, category, content)  VALUES (%s, %s, %s, %s)"
+        cmd = "INSERT INTO articles (source, headline , link, category, content)  VALUES (%s, %s, %s, %s, %s)"
         val = (item['source'], item['headline'], item['link'], item['cat'],item['content'])
         #uncomment the lines below to send data to database
         self.cursor.execute(cmd, val)  

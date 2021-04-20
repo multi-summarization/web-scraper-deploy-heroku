@@ -11,6 +11,6 @@ connection = connect(database=os.environ.get("DB_USER"),
                                password=os.environ.get("DB_PASSWORD"), 
                                host=os.environ.get("DB_HOST"))
 cursor = connection.cursor()
-cursor.execute("TRUNCATE TABLE articles")
+cursor.execute("CREATE TABLE articles (id INT AUTO_INCREMENT PRIMARY KEY, source VARCHAR(255), headline VARCHAR(255), link VARCHAR(255),category VARCHAR(255), content VARCHAR(10000))")
 connection.commit()
 connection.close()
