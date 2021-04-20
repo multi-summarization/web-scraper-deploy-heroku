@@ -178,3 +178,45 @@ class hinduSpider(scrapy.Spider):
 
             yield item
     
+# running: scrapy crawl toi -o toi_articles.json
+
+class toiSpider(scrapy.Spider):
+    name = 'toi'	
+
+        
+    start_urls = [
+        'https://timesofindia.indiatimes.com/home/headlines'
+    ]
+          
+    def parse(self, response):
+
+        for article in response.xpath("//span[@class='w_tle']/a"):
+
+            item = Article()
+
+            item['source'] = "toi"
+
+            ##### HEADLINE
+            item['headline'] = article.xpath("normalize-space(./text())").extract_first()
+
+            ##### LINK
+            link = article.xpath("./@href").extract_first()
+            if link[:4]!='http':
+                link = 'https://timesofindia.indiatimes.com'+link
+            item['link'] = link
+
+            ##### CAT
+            link_items = link.split('/')
+            if link_items[4]=='polls' or link_items[3]=='slideshows' or link_items[3]=='videos':
+                continue
+            item['cat'] = link_items[3] 
+            if item['cat']=='city':
+                item['cat'] = link_items[4]
+            item['cat'] = ' '.join(item['cat'].split('-'))
+
+            ##### CONTENT
+            item['content'] = fulltext(requests.get(link).text)
+
+            
+            yield item
+    
