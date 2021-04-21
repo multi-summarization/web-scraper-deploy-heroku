@@ -56,7 +56,7 @@ class hindustanSpider(scrapy.Spider):
 
     def parse_article(self, response):
         ##### CONTENT
-        paras=response.xpath("//div[@class='detail']/p").extract()
+        paras=response.xpath("//div[@class='detail']/p/text()").extract()
         item = response.meta['article_object']
         item['content'] = "".join(paras)
         return item
@@ -71,7 +71,8 @@ class hindustanSpider(scrapy.Spider):
 
             ##### LINK
             link = 'https://www.hindustantimes.com' + headline_object.xpath("./@href").extract_first()
-
+            if link.split('/')[3]=='videos':
+                continue
             ##### CAT
             cat = re.sub(r'[ ](?<!^)news$', '', article.xpath("./div[contains(@class, 'catName')]/a/text()").extract_first())
 
