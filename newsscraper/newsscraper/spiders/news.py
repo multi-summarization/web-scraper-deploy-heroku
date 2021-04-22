@@ -56,7 +56,7 @@ class hindustanSpider(scrapy.Spider):
 
     def parse_article(self, response):
         ##### CONTENT
-        paras=response.xpath("//div[@class='detail']/p/text()").extract()
+        paras=response.xpath("//div[@class='detail ']/p/text()").extract()
         item = response.meta['article_object']
         item['content'] = "".join(paras)
         return item
