@@ -92,8 +92,9 @@ class hindustanSpider(scrapy.Spider):
 
         next_page = response.xpath("//li[@class='next']/a/@href").extract_first()
         
-        if next_page is not None and next_page[:-1] != '0':
+        if next_page is not None and response.urljoin(next_page)[-1] != '5':
             next_page_link = response.urljoin(next_page)
+            print(next_page_link)
             yield scrapy.Request(url=next_page_link, callback=self.parse)
 
 # running: scrapy crawl ie -o ie_articles.json
