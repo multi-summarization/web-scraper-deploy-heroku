@@ -1,0 +1,32 @@
+version: '3'
+
+services: 
+    scraper:
+        build: .
+        command: bash run_script_dev.sh
+        volumes: 
+            - .:/code
+
+        environment: 
+            - DB_HOST=db
+            - DB_NAME=news_app
+            - DB_USER=postgres
+            - DB_PASSWORD=pw1234
+            - DB_PORT=5432
+
+        depends_on: 
+            - db
+        
+        
+
+    db :
+        image: postgres
+        ports:
+            - "5432:5432"      
+        environment:
+            - POSTGRES_DB=news_app
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=pw1234
+            
+
+

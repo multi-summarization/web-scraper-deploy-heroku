@@ -1,16 +1,15 @@
-from mysql.connector import connect, Error
-import os
+from psycopg2 import connect
 from os.path import join, dirname
-from dotenv import load_dotenv, find_dotenv
-dotenv_path = join(dirname(__file__), '.env')
-load_dotenv(dotenv_path)
+import os
+
+print(os.environ.get("DB_NAME"))
 
 
-connection = connect(database=os.environ.get("DB_USER"), 
+connection = connect(database=os.environ.get("DB_NAME"), 
                                user=os.environ.get("DB_USER"), 
                                password=os.environ.get("DB_PASSWORD"), 
                                host=os.environ.get("DB_HOST"))
 cursor = connection.cursor()
-cursor.execute("CREATE TABLE articles (id INT AUTO_INCREMENT PRIMARY KEY, source VARCHAR(255), headline VARCHAR(255), link VARCHAR(255),category VARCHAR(255), content VARCHAR(10000))")
+cursor.execute("CREATE TABLE articles (id SERIAL PRIMARY KEY, source VARCHAR, headline VARCHAR, link VARCHAR,category VARCHAR, content VARCHAR)")
 connection.commit()
 connection.close()
